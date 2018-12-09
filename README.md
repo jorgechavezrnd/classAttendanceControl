@@ -1,5 +1,3 @@
-# class_attendance_control
-
 A new Flutter project.
 
 ## Getting Started
