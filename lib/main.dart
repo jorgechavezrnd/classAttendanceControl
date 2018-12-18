@@ -3,8 +3,9 @@ import 'package:image_picker/image_picker.dart';
 import 'package:dio/dio.dart';
 import 'package:path/path.dart';
 import 'dart:io';
+import 'studentsDetails.dart';
 
-const baseUrl = 'https://classattendancecontrol.herokuapp.com/compare';
+const baseUrl = 'http://192.168.133.129:8080/compare';
 
 void main() => runApp(MaterialApp(
       debugShowCheckedModeBanner: false,
@@ -45,7 +46,7 @@ class _ClassAttendanceControlState extends State<ClassAttendanceControlApp> {
     }
   }
 
-  void sendImage() {
+  void sendImage(BuildContext context) {
     print('Send Image');
     
     Dio dio = new Dio();
@@ -55,7 +56,11 @@ class _ClassAttendanceControlState extends State<ClassAttendanceControlApp> {
     dio.post(baseUrl, data: formData, options: Options(
       method: 'POST',
       responseType: ResponseType.JSON
-    )).then((response) => print(response))
+    )).then((response) => Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => StudentsDetails(response: response)
+                    )))
       .catchError((error) => print(error));
   }
 
@@ -73,13 +78,16 @@ class _ClassAttendanceControlState extends State<ClassAttendanceControlApp> {
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: <Widget>[
               FloatingActionButton(
+                  heroTag: 1,
                   onPressed: () => takePicture('camera'),
                   child: Icon(Icons.camera_alt)),
               FloatingActionButton(
-                  onPressed: () => image == null ? null : sendImage(),
+                  heroTag: 2,
+                  onPressed: () => image == null ? null : sendImage(context),
                   child: Icon(Icons.check),
                   backgroundColor: image == null ? Colors.grey : null),
               FloatingActionButton(
+                  heroTag: 3,
                   onPressed: () => takePicture('gallery'),
                   child: Icon(Icons.image))
             ],
